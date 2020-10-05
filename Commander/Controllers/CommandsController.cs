@@ -4,6 +4,7 @@ using Commander.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Commander.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 
 namespace Commander.Controllers
@@ -21,6 +22,7 @@ namespace Commander.Controllers
             _mapper = mapper;
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<CommandReadDto>> GetAllCommands()
         {
@@ -28,6 +30,7 @@ namespace Commander.Controllers
             return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commandItems));
         }
 
+        [Authorize]
         [HttpGet("{id}", Name = "GetCommandById")]
         public ActionResult<CommandReadDto> GetCommandById(int id)
         {
@@ -40,6 +43,7 @@ namespace Commander.Controllers
             return NotFound();
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult<CommandReadDto> CreateCommand(CommandCreateDto commandCreateDto)
         {
@@ -52,6 +56,7 @@ namespace Commander.Controllers
             return CreatedAtRoute(nameof(GetCommandById), new {Id = commandReadDto.Id}, commandReadDto);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public ActionResult UpdateCommand(int id, CommandUpdateDto commandUpdateDto)
         {
@@ -70,6 +75,7 @@ namespace Commander.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPatch("{id}")]
         public ActionResult PartialCommandUpdate(int id, JsonPatchDocument<CommandUpdateDto> patchDoc)
         {
@@ -96,6 +102,7 @@ namespace Commander.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public ActionResult CommandDelete(int id)
         {

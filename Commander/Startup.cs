@@ -1,6 +1,7 @@
 using System;
 using AutoMapper;
 using Commander.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,13 @@ namespace Commander
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt =>
+                {
+                    opt.Audience = Configuration["AAD:ResourceId"];
+                    opt.Authority = $"{Configuration["AAD:InstanceId"]}{Configuration["AAD:TenantId"]}";
+                });
+
             services.AddDbContext<CommanderContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CommanderConnection")));
 
@@ -50,6 +58,8 @@ namespace Commander
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
